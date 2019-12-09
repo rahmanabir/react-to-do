@@ -10,9 +10,16 @@ class AddTodo extends Component {
     //Dynamic Onchange 
     onChange = (event) => this.setState({ [event.target.name]: event.target.value });
 
+    onSubmit = (event) => {
+        event.preventDefault();
+        this.props.addTodo(this.state.title);
+        this.setState({ title: "" });
+    }
+
+
     render() {
         return (
-            <form style={{ display: 'flex' }}>
+            <form onSubmit={this.onSubmit} style={{ display: 'flex' }}>
                 <input
                     type="text"
                     name="title"
