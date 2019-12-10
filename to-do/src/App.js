@@ -4,34 +4,21 @@ import Todos from './components/Todos';
 import AddTodo from './components/AddTodo';
 import Header from './components/layout/Header';
 import About from './components/pages/About';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component {
 
   state = {
-    todos: [
-      {
-        id: 1,
-        title: 'Take out the trash',
-        completed: false
-      },
-      {
-        id: 2,
-        title: 'Finish assignment',
-        completed: false
-      },
-      {
-        id: 3,
-        title: 'Eat breakfast',
-        completed: false
-      },
-      {
-        id: 4,
-        title: 'Do something',
-        completed: false
-      }
-    ]
+    todos: []
   }
+
+  async componentDidMount() {
+    const { data } = await axios.get('https://jsonplaceholder.typicode.com/todos');
+    this.setState({ todos: data });
+  }
+
+
 
   //Toggle Complete
   markComplete = (id) => {
@@ -48,20 +35,24 @@ class App extends Component {
   }
 
   //Delete Todo
-  delTodo = (id) => {
-    this.setState({ todos: [...this.state.todos.filter(todo => todo.id !== id)] });
+  delTodo = async (id) => {
+
+    //Need to add try catch block and error handling
+    await axios.delete(`https://jsonplaceholder.typicode.com/todos/${id}`); //Deletes from server
+    this.setState({ todos: [...this.state.todos.filter(todo => todo.id !== id)] }); // Updates UI
 
   }
 
 
   //AddTodo
-  addTodo = (title) => {
+  addTodo = async (title) => {
+
     const newTodo = {
-      id: 5,
-      title, //ES6 feature, since names are the same, can directly wirte that here.
+      title,
       completed: false
     }
-    this.setState({ todos: [...this.state.todos, newTodo] });
+    const { data } = await axios.post('https://jsonplaceholder.typicode.com/todos', newTodo);
+    this.setState({ todos: [...this.state.todos, data] });
 
   }
 
